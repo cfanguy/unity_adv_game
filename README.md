@@ -1,2 +1,2 @@
-# unity_adv_game
-Unity Top Down 3D Adventure Game
+# Unity Adventure Game
+Unity Top Down 3D Version of https://github.com/cfanguy/adventure_game
