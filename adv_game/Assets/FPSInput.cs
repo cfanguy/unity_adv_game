@@ -9,11 +9,17 @@ using System.Collections;
 public class FPSInput : MonoBehaviour {
 	public float speed = 6.0f;
 	public float gravity = -9.8f;
+	public float turnSpeed = 0.05F;
 
-	private CharacterController _charController;
+	private CharacterController charController;
+	private Animator charAnimator;
+
+	Vector3 input = Vector3.zero;
+    Quaternion influencedByCamera;
 	
 	void Start() {
-		_charController = GetComponent<CharacterController>();
+		charController = GetComponent<CharacterController>();
+		charAnimator = GetComponent<Animator>();
 	}
 	
 	void Update() {
@@ -27,6 +33,23 @@ public class FPSInput : MonoBehaviour {
 
 		movement *= Time.deltaTime;
 		movement = transform.TransformDirection(movement);
-		_charController.Move(movement);
+		charController.Move(movement);
+
+		if(Input.GetAxis("Vertical") != 0 || Input.GetAxis("Horizontal") != 0)
+		{
+			charAnimator.Play("Walking");
+
+			input = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"));
+            influencedByCamera = Quaternion.LookRotation(Quaternion.Euler(0, charController.transform.rotation.eulerAngles.y, 0) * (input * Time.deltaTime));
+            transform.rotation = Quaternion.Slerp(transform.rotation, influencedByCamera, turnSpeed);
+		}
+		else {
+			if(Input.GetButton("Jump"))
+			{
+				charAnimator.Play("Swinging");
+			}
+			//else
+				//charAnimator.Play("Idle");
+		}
 	}
 }
